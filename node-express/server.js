@@ -49,25 +49,27 @@ app.get('/api/user/:id', (req, res, next) => {
   })
 })
 app.post('/api/autenticar', (req, res, next) => {
-  // var sql = 'select * from user where user = ?'
-  // var params = [req.params.user]
-  // db.get(sql, params, (err, row) => {
-  //   if (err) {
-  //     res.status(400).json({ error: err.message })
-  //     return
-  //   }
-  //   res.json({
-  //     message: 'success',
-  //     data: row,
-  //   })
-  // })
-
-  if (req.body.user == 'admin') {
-    res.json({ mensaje: 'Login correcto' })
-  } else {
-    res.json({ mensaje: 'Login erroneo' })
-  }
+  var sql = 'SELECT * FROM user WHERE email = ? AND password = ?'
+  var params = [req.body.email, md5(req.body.password)]
+  db.get(sql, params, (err, user) => {
+    if (err) {
+      res.status(400).json({ error: err.message })
+    } else {
+      if (user) {
+        res.json({
+          message: 'success',
+          data: user,
+        })
+      } else {
+        res.json({
+          message: 'Contraseña incorrecta!',
+          params,
+        })
+      }
+    }
+  })
 })
+
 app.post('/api/user/', (req, res, next) => {
   var errors = []
   if (!req.body.password) {

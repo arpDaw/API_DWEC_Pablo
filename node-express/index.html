@@ -6,17 +6,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <script defer src="database.js"></script>
-    <script defer src="logica.js"></script>
+    <script defer src="verificaForm.js"></script>
   </head>
   <body>
-    <form action="http://localhost:8000/api/autenticar/" method="post">
+    <form
+      action="http://localhost:8000/api/autenticar/"
+      method="post"
+      id="login"
+    >
       <h1>Login</h1>
-      <label for="">Usuario</label><input type="text" name="user" id="user" />
+      <label for="">Email</label><input type="text" name="email" id="email" />
       <br />
       <label for="">Contraseña </label
-      ><input type="password" name="pass" id="pass" />
+      ><input type="password" name="password" id="password" />
       <br />
-      <button type="submit" name="bLogin" id="bLogin">Login</button>
+      <input type="submit" name="bLogin" id="bLogin" value="login" />
+    </form>
+
+    <form action="http://localhost:8000/api/user/" method="post" id="signup">
+      <h1>Sign Up</h1>
+      <label for="">Usuario</label><input type="text" name="name" id="name" />
+      <label for="">Email</label><input type="text" name="email" id="email" />
+      <br />
+      <label for="">Contraseña </label
+      ><input type="password" name="password" id="password" />
+      <label for="">Contraseña 2 </label
+      ><input type="password" name="password2" id="password2" />
+      <br />
+      <button type="submit" name="bSignUp" id="bSignUp">SignUp</button>
     </form>
   </body>
 </html>
