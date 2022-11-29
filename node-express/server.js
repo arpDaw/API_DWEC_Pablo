@@ -3,17 +3,28 @@ var express = require('express')
 var app = express()
 var db = require('./database.js')
 var md5 = require('md5')
+var https = require('https')
+var fs = require('fs')
+var sha512 = require('sha512')
 
 var bodyParser = require('body-parser')
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 // Server port
-var HTTP_PORT = 8000
+const PUERTO = 443
 // Start server
-app.listen(HTTP_PORT, () => {
-  console.log('Server running on port %PORT%'.replace('%PORT%', HTTP_PORT))
-})
+https
+  .createServer(
+    {
+      cert: fs.readFileSync('cert.pem'),
+      key: fs.readFileSync('key.pem'),
+    },
+    app
+  )
+  .listen(PUERTO, function () {
+    console.log('Servidor https correindo en el puerto 443')
+  })
 // Root endpoint
 app.get('/', (req, res, next) => {
   res.json({ message: 'Ok' })
@@ -50,7 +61,7 @@ app.get('/api/user/:id', (req, res, next) => {
 })
 app.post('/api/autenticar', (req, res, next) => {
   var sql = 'SELECT * FROM user WHERE email = ? AND password = ?'
-  var params = [req.body.email, md5(req.body.password)]
+  var params = [req.body.email, sha512(req.body.password)]
   db.get(sql, params, (err, user) => {
     if (err) {
       res.status(400).json({ error: err.message })
@@ -85,7 +96,7 @@ app.post('/api/user/', (req, res, next) => {
   var data = {
     name: req.body.name,
     email: req.body.email,
-    password: md5(req.body.password),
+    password: sha512(req.body.password),
   }
   var sql = 'INSERT INTO user (name, email, password) VALUES (?,?,?)'
   var params = [data.name, data.email, data.password]
